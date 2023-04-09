@@ -1,0 +1,2 @@
+Sun, 09 Apr 2023 14:54:55 GMT: /home/linh/KTnista/KTnista2/ktnista2_api/src/server.ts:42:24
+    : Not allowed by KTnista CORS

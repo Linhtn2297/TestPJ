@@ -1,0 +1,8 @@
+Sun, 09 Apr 2023 17:21:41 GMT: /home/linh/KTnista/KTnista2/ktnista2_api/src/server.ts:44:24
+    : Not allowed by KTnista CORS
+Sun, 09 Apr 2023 17:27:22 GMT: /home/linh/KTnista/KTnista2/ktnista2_api/src/server.ts:44:24
+    : Not allowed by KTnista CORS
+Sun, 09 Apr 2023 17:28:34 GMT: /home/linh/KTnista/KTnista2/ktnista2_api/src/server.ts:44:24
+    : Not allowed by KTnista CORS
+Sun, 09 Apr 2023 17:28:50 GMT: /home/linh/KTnista/KTnista2/ktnista2_api/src/server.ts:44:24
+    : Not allowed by KTnista CORS
