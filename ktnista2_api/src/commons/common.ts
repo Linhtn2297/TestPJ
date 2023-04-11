@@ -14,17 +14,25 @@ import format from 'string-format';
 
 import { Message, DataResponse, ErrorItem } from './types';
 import MESSAGE from './message';
-import DEFIND from './defind';
+import { FIELD_TYPE } from './defind';
 // #endregion Import module
 
 // #region Exports
-/// Get type of data
+/**
+ * Get type of data
+ * @param data: data to get type
+ * @returns type of data as string
+ */
 export const getType = (data: any): string => {
     return Object.prototype.toString.call(data).slice(8, -1);
 }
 
-/// Check field undefined, null or empty string
-export const isNullOrEmpty = (data: string): boolean => {
+/**
+ * Check field undefined, null or empty string
+ * @param data: data to check null or empty or undefined
+ * @returns true: is null or empty or undefined | false: is not
+ */
+export const isNullOrEmpty = (data: string | undefined): boolean => {
     if (data === undefined || data === '' || data === null) {
         return true;
     }
@@ -32,12 +40,11 @@ export const isNullOrEmpty = (data: string): boolean => {
     return false;
 };
 
-/// Check is json data
-export const isJson = (data: object): boolean => {
-    return Object.keys(data).length > 0;
-};
-
-/// Check user password field
+/**
+ * Check user password field
+ * @param str: data to check
+ * @returns true: valid password | false: invalid
+ */
 export const checkPassword = (str: string): boolean => {
     let specialChars = /[`!@#$%^&*()_+\-=/[\]{};':"\\|,.<>\t/?~]/;
     let lowerCaseLetter = /[a-z]/g;
@@ -52,24 +59,32 @@ export const checkPassword = (str: string): boolean => {
     return true;
 }
 
-/// Create response message body
+/**
+ * Create response message body
+ * @param data: main data
+ * @param apiNm: api name
+ * @param titleText: title to replace in text message
+ * @param message: message
+ * @param error: exception error
+ * @returns data response
+ */
 export const createResponseMessage = (
     data: any,
     apiNm: string,
-    tblNm: string,
+    titleText: string,
     message: Message,
     error?: Error): DataResponse => {
     let dataResponse: DataResponse = {
         status: message.STATUS,
-        message: format(message.TEXT, tblNm)
+        message: format(message.TEXT, titleText)
     }
 
-    if (message.STATUS === MESSAGE.ERR_EXCEPTION.STATUS && (isNullOrEmpty(tblNm) || tblNm.indexOf('undefined') !== -1)) {
+    if (message.STATUS === MESSAGE.ERR_EXCEPTION.STATUS && (isNullOrEmpty(titleText) || titleText.indexOf('undefined') !== -1)) {
         dataResponse.message = MESSAGE.ERR_EXCEPTION_V2.TEXT;
         dataResponse.message += error !== undefined ? '(' + error?.message + ')' : '';
     }
 
-    if (getType(data) === DEFIND.FIELD_TYPE.OBJECT || data.length > 0 || message.STATUS === 0) {
+    if (getType(data) === FIELD_TYPE.OBJECT || data.length > 0 || message.STATUS === 0) {
         if (Array.isArray(data)) {
             dataResponse.count = data.length;
             // If is Api GET
@@ -85,7 +100,15 @@ export const createResponseMessage = (
     return dataResponse;
 }
 
-/// Create error response
+/**
+ * Create error data
+ * @param errLst: list error
+ * @param propNm: property name
+ * @param propValue: property value
+ * @param itemNm: item name to replace in text message
+ * @param message: message
+ * @returns list error
+ */
 export const createErrResponseMessage = (
     errLst: Array<ErrorItem>,
     propNm: string,

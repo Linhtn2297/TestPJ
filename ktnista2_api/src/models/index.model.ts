@@ -10,7 +10,7 @@
 //**********************************************************************************************************************************
 
 // #region Import module
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 import User from './user.model';
 // #endregion Import module
 

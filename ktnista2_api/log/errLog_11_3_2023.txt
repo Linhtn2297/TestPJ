@@ -1,0 +1,4 @@
+Mon, 10 Apr 2023 18:13:11 GMT: /home/linh/KTnista/KTnista2/ktnista2_api/src/server.ts:48:24
+    : Not allowed by KTnista CORS
+Headers: {"user-agent":"PostmanRuntime/7.31.3","accept":"*/*","postman-token":"cd70a449-4766-4606-a2b6-ebda0ee132bf","host":"localhost:10797","accept-encoding":"gzip, deflate, br","connection":"keep-alive"}
+Body: {}

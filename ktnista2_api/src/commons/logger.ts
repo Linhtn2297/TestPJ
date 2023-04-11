@@ -14,6 +14,11 @@ import fs from 'fs';
 // #endregion Import mudule
 
 // #region Functions
+/**
+ * Write log to file
+ * @param fileNm: file name
+ * @param data: data to save
+ */
 const writeLog = async (fileNm: string, data: string) => {
     if (fs.existsSync('./log/' + fileNm)) {
         await fs.appendFile('./log/' + fileNm, data, (err) => {
@@ -28,14 +33,26 @@ const writeLog = async (fileNm: string, data: string) => {
 // #endregion Functions
 
 // #region Exports
+/**
+ * Logger class
+ */
 export default class {
+    /**
+     * Write tracking log
+     * @param str: data so save
+     */
     static info = async (str: string) => {
         const date = new Date();
         const fileNm = 'normalLog_' + date.getDate() + '_' + date.getMonth() + '_' + date.getFullYear() + '.txt';
         await writeLog(fileNm, date.toUTCString() + ': ' + str + '\n');
     }
 
-    static error = async (err: Error, stack?: string) => {
+    /**
+     * Write error log
+     * @param err: error
+     * @param stack: stack error
+     */
+    static error = async (err: any, stack?: string) => {
         const date = new Date();
         const mes = date.toUTCString() + ': ' + stack?.split("at ")[1] + ': ' + err.message;
         const fileNm = 'errLog_' + date.getDate() + '_' + date.getMonth() + '_' + date.getFullYear() + '.txt';
@@ -44,6 +61,10 @@ export default class {
         await writeLog(fileNm, mes + '\n');
     }
 
+    /**
+     * Write debug log
+     * @param requestInfo: request data
+     */
     static debug = async (requestInfo: string) => {
         const date = new Date();
         const fileNm = 'errLog_' + date.getDate() + '_' + date.getMonth() + '_' + date.getFullYear() + '.txt';

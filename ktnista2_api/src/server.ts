@@ -10,45 +10,60 @@
 //**********************************************************************************************************************************
 
 // #region Import module
-import express, { Application, Request, Response, NextFunction } from 'express';
+import express, { Request, Response, NextFunction, Application } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import 'dotenv/config';
 
-import corsOptions from './configs/corsOptions.config';
-import dbConnect from './configs/dbConnect.config';
+import start from './middlewares/start.middleware';
+import auth from './middlewares/auth.middleware';
+import end from './middlewares/end.middleware';
+import corsOptions from './configs/cors_options.config';
+import dbConnect from './configs/db_connect.config';
 import { createResponseMessage } from '../src/commons/common';
 import MESSAGE from './commons/message';
 import logger from './commons/logger';
 // #endregion Import module
 
+/** Express application */
 const app: Application = express();
 
-/// DB connection
+/** DB connection */
 dbConnect();
 
-/// Using body json
+//#region Add middleware to pipeline
+/** Using body json */
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-/// Cross origin resource sharing
+/** Check server status */
+app.get('/', async (req: Request, res: Response) => {
+    return res.send(createResponseMessage([], '', '', MESSAGE.SERVER_READY));
+});
+
+/** Cross origin resource sharing */
 app.use(cors(corsOptions));
 
-/// Check server status
-app.get('/', async (req: Request, res: Response) => {
-    res.send('KTnista API server is ready!');
-});
+/** Setup some common data before to process */
+app.use(start);
 
-// Exception error
+/** Add authen and authorize middleware */
+app.use(auth);
+
+/** Exception error */
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     logger.error(err, (new Error().stack));
-    return res.status(500).json(createResponseMessage([], '', '', MESSAGE.ERR_EXCEPTION, err));
+    res.result = createResponseMessage([], '', '', MESSAGE.ERR_EXCEPTION, err);
+    next();
 });
 
-// #region Start server
+/** Setup some data before send to client */
+app.use(end);
+//#endregion
+
+/** Start server */
 const port = process.env.PORT || 10197;
 app.listen(Number(port), '0.0.0.0', () => {
     console.log(`KTnista API listening at http://localhost:${port}`);
 });
-// #endregion Start server
 

@@ -15,6 +15,10 @@ export default {
     OK: {
         STATUS: 0
     },
+    SERVER_READY: {
+        STATUS: 200,
+        TEXT: 'KTnista API server is ready!'
+    },
     GET_SUCCESSFUL: {
         STATUS: 0,
         TEXT: ''
