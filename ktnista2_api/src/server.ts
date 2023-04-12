@@ -17,6 +17,7 @@ import 'dotenv/config';
 
 import start from './middlewares/start.middleware';
 import auth from './middlewares/auth.middleware';
+import checkBody from './middlewares/base.middleware';
 import end from './middlewares/end.middleware';
 import corsOptions from './configs/cors_options.config';
 import dbConnect from './configs/db_connect.config';
@@ -52,6 +53,9 @@ app.use(start);
 /** Add authen and authorize middleware */
 app.use(auth);
 
+/** Add check body format */
+app.use(checkBody);
+
 /** Exception error */
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     logger.error(err, (new Error().stack));
@@ -65,7 +69,7 @@ app.use(end);
 //#endregion  Add middleware to pipeline
 
 /** Start server */
-const port = process.env.PORT | 10197;
+const port = process.env.PORT || 10197;
 app.listen(port, '0.0.0.0', () => {
     console.log(`KTnista API listening at http://localhost:${port}`);
 });

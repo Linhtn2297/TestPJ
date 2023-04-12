@@ -12,13 +12,12 @@
 // #region Import
 import format from 'string-format';
 
-import { Message, DataResponse, ErrorItem } from './types';
-import MESSAGE from './message';
+import { DataResponse, ErrorItem } from './types';
+import MESSAGE, { MSG } from './message';
 import { DATA_TYPE } from './define';
 // #endregion Import
 
 // #region Export
-
 /**
  * Get type of data
  * @param data: data to get type
@@ -73,7 +72,7 @@ export const createResponseMessage = (
     data: any,
     apiNm: string,
     titleText: string,
-    message: Message,
+    message: MSG,
     error?: Error): DataResponse => {
     let dataResponse: DataResponse = {
         status: message.STATUS,
@@ -115,7 +114,7 @@ export const createErrResponseMessage = (
     propNm: string,
     propValue: any,
     itemNm: string,
-    message: Message): Array<ErrorItem> => {
+    message: MSG): Array<ErrorItem> => {
     errLst.push({
         itemName: propNm,
         itemValue: propValue,
@@ -125,5 +124,4 @@ export const createErrResponseMessage = (
 
     return errLst;
 }
-
 // #endregion Export

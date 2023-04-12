@@ -1,34 +1,38 @@
 //**********************************************************************************************************************************
 //* ALL RIGHTS RESERVED. COPYRIGHT (C) 2023 KTNISTA                                                                                *
 //**********************************************************************************************************************************
-//* File Name    : index.model.ts                                                                                                  *
-//* Function     : Index model                                                                                                     *
+//* File Name    : hatu.model.ts                                                                                                   *
+//* Function     : Hatu model                                                                                                      *
 //* System Name  : Ktnista Api                                                                                                     *
-//* Create       : LinhTrinh 09/04/2023                                                                                            *
+//* Create       : LinhTrinh 12/04/2023                                                                                            *
 //* Update       :                                                                                                                 *
 //* Comment      :                                                                                                                 *
 //**********************************************************************************************************************************
-
 // #region Import
-import mongoose from "mongoose";
-import User, { IUser } from './user.model';
-import Hatu from "./hatu.model";
+import { Document } from "mongoose";
+import { MongooseInput } from "../commons/types";
 // #endregion Import
 
-// #region Set model
-interface IDB {
-    mongoose: typeof mongoose;
-    users: any;
-    hatus: any;
-}
-
-const db: IDB = {
-    mongoose: mongoose,
-    users: User({ mongoose }),
-    hatus: Hatu({ mongoose })
-}
-// #endregion Set model
-
 // #region Export
-export default db;
-// #endregion Export
+export interface IHatu extends Document {
+    key_nm: String;
+    key_value: number;
+}
+
+export default ({ mongoose }: MongooseInput) => {
+    let schema = new mongoose.Schema({
+        /** Key name */
+        key_nm: {
+            type: String,
+            required: true
+        },
+        /** Key value */
+        key_value: {
+            type: Number,
+            required: true
+        }
+    });
+
+    return mongoose.model<IHatu>('Hatu', schema);
+}
+// #endregion Exports

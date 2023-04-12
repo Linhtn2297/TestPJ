@@ -108,7 +108,7 @@ export const create = async (
  * @param user_cd: user code
  * @param token: access token
  */
-export const compare = async (user_cd: string, token: string | undefined) => {
+export const compare = async (user_cd: string, token: string | undefined): Promise<AdminSession | null> => {
     try {
         if (token === undefined) return null;
 

@@ -15,7 +15,7 @@ import allowedOrigins from "./allowed_origins";
 // #endregion Import
 
 /**
- * options for cors midddleware
+ * Options for cors midddleware
  */
 const options: cors.CorsOptions = {
     allowedHeaders: [

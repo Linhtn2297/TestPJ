@@ -14,7 +14,6 @@ import fs from 'fs';
 // #endregion Import
 
 // #region Export
-
 /**
  * Logger class
  */
@@ -70,5 +69,4 @@ export default class {
         await this.writeLog(fileNm, requestInfo);
     }
 }
-
 // #endregion Exports

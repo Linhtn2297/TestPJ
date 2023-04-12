@@ -15,13 +15,18 @@ import sanitize from 'mongo-sanitize';
 
 import { createResponseMessage, getType } from '../commons/common';
 import MESSAGE from '../commons/message';
-import { CHECK_BODY_TYPE, INPUT_VALIDATE_PROTOTYPE, REQUEST_GET_PROTOTYPE, DATA_TYPE, ROLE_TYPE } from '../commons/define';
+import DEFINE, { CHECK_BODY_TYPE, DATA_TYPE, ROLE_TYPE } from '../commons/define';
 
 const logger = require('../commons/logger');
 // #endregion Import
 
 // #region Functions
-/// Check request body for api GET
+/**
+ * Check request body for api GET
+ * @param body: body data
+ * @param apiName: api name
+ * @returns true: body valid | false: invalid
+ */
 const checkGetBody = (body: any, apiName: string) => {
     let bodyData = body[apiName];
     if (bodyData !== undefined) {
@@ -33,7 +38,7 @@ const checkGetBody = (body: any, apiName: string) => {
         // Get query fields
         let { offset, limit, sort, fields, data } = bodyData;
         // Get fields name of db table
-        let fieldsProt = Object.getOwnPropertyNames(INPUT_VALIDATE_PROTOTYPE[apiName]);
+        let fieldsProt = Object.getOwnPropertyNames(DEFINE.INPUT_VALIDATE_PROTOTYPE[apiName]);
         fieldsProt = fieldsProt.concat(['del_fg', 'insertYmdHms', 'updateYmdHms']);
 
         // Check data to create detail get query
@@ -103,7 +108,7 @@ const checkGetBody = (body: any, apiName: string) => {
         }
 
         // Get relate table
-        let { relateTables } = REQUEST_GET_PROTOTYPE[apiName];
+        let { relateTables } = DEFINE.REQUEST_GET_PROTOTYPE[apiName];
         // Check relate table
         for (let i = 0; i < relateTables.length; i++) {
             let result = checkGetBody(bodyData, relateTables[i].tableNm);
@@ -116,84 +121,81 @@ const checkGetBody = (body: any, apiName: string) => {
 // #endregion Functions
 
 // #region Export
-module.exports = {
-    /// Middleware for check body format
-    checkBody: (req: Request, res: Response, next: NextFunction) => {
-        // If there was a previous error, it will be forwarded
-        if (res.result?.status !== MESSAGE.OK.STATUS) {
-            return next();
-        }
+export default (req: Request, res: Response, next: NextFunction) => {
+    // If there was a previous error, it will be forwarded
+    if (res.result?.status !== MESSAGE.OK.STATUS) {
+        return next();
+    }
 
-        try {
-            let { apiName, checkBodyType, requiredRole } = req.accessInfo;   // Api name, body format type for check
-            let body = req.body;                                             // Request body
+    try {
+        let { apiName, checkBodyType, requiredRole } = req.accessInfo;   // Api name, body format type for check
+        let body = req.body;                                             // Request body
 
-            if (checkBodyType !== CHECK_BODY_TYPE.NO_CHECK) {
-                // Body request must be object type and has property apiName
-                if (getType(body) !== DATA_TYPE.OBJECT || !body.hasOwnProperty(apiName)) {
+        if (checkBodyType !== CHECK_BODY_TYPE.NO_CHECK) {
+            // Body request must be object type and has property apiName
+            if (getType(body) !== DATA_TYPE.OBJECT || !body.hasOwnProperty(apiName)) {
+                res.result = createResponseMessage([], '', '', MESSAGE.ERR_INVALID_FORMAT_BODY);
+                return next();
+            }
+
+            let bodyData = body[apiName];
+            // Clear body (clear some special char for security)
+            bodyData = sanitize(bodyData);
+
+            if (checkBodyType === CHECK_BODY_TYPE.CHECK_JSON) {
+                // Only check json format body
+                if (getType(bodyData) !== DATA_TYPE.OBJECT) {
                     res.result = createResponseMessage([], '', '', MESSAGE.ERR_INVALID_FORMAT_BODY);
                     return next();
                 }
 
-                let bodyData = body[apiName];
-                // Clear body (clear some special char for security)
-                bodyData = sanitize(bodyData);
+                // Fields can not change by client
+                if (req.method !== 'GET') {
+                    delete bodyData?._id;
+                    if (requiredRole < ROLE_TYPE.SUPER_ADMIN) delete bodyData.del_fg;
+                }
+            }
+            else {
+                // Check array format body
+                if (getType(bodyData) !== DATA_TYPE.ARRAY || bodyData.length === 0) {
+                    res.result = createResponseMessage([], '', '', MESSAGE.ERR_INVALID_FORMAT_BODY);
+                    return next();
+                }
 
-                if (checkBodyType === CHECK_BODY_TYPE.CHECK_JSON) {
-                    // Only check json format body
-                    if (getType(bodyData) !== DATA_TYPE.OBJECT) {
-                        res.result = createResponseMessage([], '', '', MESSAGE.ERR_INVALID_FORMAT_BODY);
-                        return next();
-                    }
+                if (bodyData.length > 1) {
+                    // If inserting many, there must be have sequence number
+                    for (var i = 0; i < bodyData.length; i++) {
+                        if (bodyData[i].no === undefined || bodyData[i].no !== i + 1) {
+                            res.result = createResponseMessage([], '', '', MESSAGE.ERR_INVALID_FORMAT_BODY);
+                        }
 
-                    // Fields can not change by client
-                    if (req.method !== 'GET') {
-                        delete bodyData?._id;
-                        if (requiredRole < ROLE_TYPE.SUPER_ADMIN) delete bodyData.del_fg;
+                        // Fields can not change by client
+                        if (req.method !== 'GET') {
+                            delete bodyData[i]?._id;
+                            if (requiredRole < ROLE_TYPE.SUPER_ADMIN) delete bodyData[i]?.del_fg;
+                        }
                     }
                 }
                 else {
-                    // Check array format body
-                    if (getType(bodyData) !== DATA_TYPE.ARRAY || bodyData.length === 0) {
-                        res.result = createResponseMessage([], '', '', MESSAGE.ERR_INVALID_FORMAT_BODY);
-                        return next();
+                    // Fields can not change by client
+                    if (req.method !== 'GET') {
+                        delete bodyData[0]?._id;
+                        if (requiredRole < ROLE_TYPE.SUPER_ADMIN) delete bodyData[0]?.del_fg;
                     }
-
-                    if (bodyData.length > 1) {
-                        // If inserting many, there must be have sequence number
-                        for (var i = 0; i < bodyData.length; i++) {
-                            if (bodyData[i].no === undefined || bodyData[i].no !== i + 1) {
-                                res.result = createResponseMessage([], '', '', MESSAGE.ERR_INVALID_FORMAT_BODY);
-                            }
-
-                            // Fields can not change by client
-                            if (req.method !== 'GET') {
-                                delete bodyData[i]?._id;
-                                if (requiredRole < ROLE_TYPE.SUPER_ADMIN) delete bodyData[i]?.del_fg;
-                            }
-                        }
-                    }
-                    else {
-                        // Fields can not change by client
-                        if (req.method !== 'GET') {
-                            delete bodyData[0]?._id;
-                            if (requiredRole < ROLE_TYPE.SUPER_ADMIN) delete bodyData[0]?.del_fg;
-                        }
-                    }
-                }
-
-                // Check format body for API GET
-                if (req.method === 'GET' && !checkGetBody(body, apiName)) {
-                    res.result = createResponseMessage([], '', '', MESSAGE.ERR_INVALID_FORMAT_BODY);
                 }
             }
-        }
-        catch (err) {
-            logger.error(err, (new Error().stack));
-            res.result = createResponseMessage([], '', '', MESSAGE.ERR_EXCEPTION);
-        }
 
-        return next();
+            // Check format body for API GET
+            if (req.method === 'GET' && !checkGetBody(body, apiName)) {
+                res.result = createResponseMessage([], '', '', MESSAGE.ERR_INVALID_FORMAT_BODY);
+            }
+        }
     }
+    catch (err) {
+        logger.error(err, (new Error().stack));
+        res.result = createResponseMessage([], '', '', MESSAGE.ERR_EXCEPTION);
+    }
+
+    return next();
 }
 // #endregion Exports

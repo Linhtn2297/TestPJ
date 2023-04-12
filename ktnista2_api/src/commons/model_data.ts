@@ -11,11 +11,9 @@
 
 // #region Import
 import { CHECK_AUTH_TYPE, CHECK_BODY_TYPE, ROLE_TYPE } from "./define";
-import { AdminSession } from "./types";
 // #endregion Import
 
 // #region Export
-
 /**
  * Access infomation class
  */
@@ -48,5 +46,4 @@ export class AccessInfo {
         this.user = _user;
     }
 }
-
 // #endregion Export

@@ -16,7 +16,7 @@ import cron from 'node-cron';
 
 import { delExpireSession } from '../services/admin_sessions.service'
 import { AccessInfo } from "../commons/model_data";
-import { API_INFO } from "../commons/define";
+import DEFINE from "../commons/define";
 import MESSAGE from '../commons/message';
 import { createResponseMessage } from "../commons/common";
 import "../configs/global";
@@ -25,7 +25,6 @@ import logger from "../commons/logger";
 // #endregion Import
 
 // #region Export
-
 /**
  * Middleware to setup some common data before to process
  * */
@@ -46,7 +45,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
             }
 
             // Get require role, check body format type, check authentication type
-            let accessInfo: AccessInfo = API_INFO[route][req.method];
+            let accessInfo: AccessInfo = DEFINE.API_INFO[route][req.method];
             if (accessInfo === undefined) {
                 // Not found Api
                 res.result = createResponseMessage([], '', '', MESSAGE.ERR_API_NOT_FOUND);

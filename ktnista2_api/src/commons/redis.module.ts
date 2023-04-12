@@ -16,11 +16,11 @@ const client = require('../configs/redis.config');
 // #region Export
 /**
  * Save string value to redis with key and id
- * @key primary key
- * @id base key
- * @value value to save
+ * @param key: primary key
+ * @param id: base key
+ * @param value: value to save
  */
-export const setRedis = async (key: string, id: string, value: string): Promise<string | null> => {
+export const setRedis = async (key: string, id: string, value: string): Promise<string> => {
     key = key + ':' + id;
     return new Promise((isOK, isErr) => {
         client.set(key, value, (err: Error, rs: string) => {
@@ -34,7 +34,7 @@ export const setRedis = async (key: string, id: string, value: string): Promise<
  * @param primaryKey: primary key
  * @param baseKey: base key
  */
-export const getRedis = async (primaryKey: string, baseKey: string): Promise<string | null> => {
+export const getRedis = async (primaryKey: string, baseKey: string): Promise<string> => {
     return new Promise((isOK, isErr) => {
         client.get(primaryKey + baseKey, (err: Error, rs: string) => {
             return !err ? isOK(rs) : isErr(err);

@@ -15,6 +15,7 @@ import MESSAGE from '../commons/message';
 import { createResponseMessage } from '../commons/common';
 
 import logger from '../commons/logger';
+import { AccessInfo } from '../commons/model_data';
 // #endregion Import
 
 // #region Export
