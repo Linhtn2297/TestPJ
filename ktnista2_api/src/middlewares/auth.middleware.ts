@@ -9,20 +9,20 @@
 //* Comment      :                                                                                                                 *
 //**********************************************************************************************************************************
 
-// #region Import module
+// #region Import
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 
-import * as adminSession from '../services/admin_sessions.service';
+import * as adminSessionService from '../services/admin_sessions.service';
 import { createResponseMessage } from '../commons/common';
-import DEFINE, { ROLE_TYPE, CHECK_AUTH_TYPE } from '../commons/defind';
+import DEFINE, { ROLE_TYPE, CHECK_AUTH_TYPE } from '../commons/define';
 import MESSAGE from '../commons/message';
 import { isNullOrEmpty } from '../commons/common';
 
 import logger from '../commons/logger';
-// #endregion Import module
+// #endregion Import
 
-// #region Exports
+// #region Export
 /**
  * Middleware for verify access
  */
@@ -34,12 +34,12 @@ export default async (req: Request, res: Response, next: NextFunction) => {
 
     try {
         // Role required, authenication type
-        let { requireRole, checkAuthType } = req.accessInfo;
-        if (requireRole !== ROLE_TYPE.UNIDENTIFIED) {
+        let { requiredRole, checkAuthType } = req. accessInfo;
+        if (requiredRole !== ROLE_TYPE.UNIDENTIFIED) {
             // Key for decode token use for authorize
             let key = process.env.JWT_REFRESH_TOKEN ?? 'KTnistaRF2023Token';
             // Get token from header
-            let token = req.header(DEFINE.HEADER_AUTH_NM) ?? '';
+            let token = req.header(DEFINE.HEADER_AUTH_NM);
             // If check cookie type, token will be get from cookie
             if (checkAuthType === CHECK_AUTH_TYPE.CHECK_COOKIE) {
                 token = req.cookies[DEFINE.HEADER_AUTH_NM];
@@ -55,7 +55,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
 
             // Verify and check token payload
             let verified: any;
-            if (requireRole >= ROLE_TYPE.USER) {
+            if (requiredRole >= ROLE_TYPE.USER) {
                 // For users
                 // Decode user access token
                 verified = jwt.verify(token, key);
@@ -65,19 +65,19 @@ export default async (req: Request, res: Response, next: NextFunction) => {
                 }
                 else {
                     // Check user access exist
-                    let sess = checkAuthType === CHECK_AUTH_TYPE.CHECK_COOKIE
-                        ? await adminSession.compare(verified.user_cd, token)
-                        : await adminSession.get(verified.user_cd);
-                    if (sess === null) {
+                    let adminSession = checkAuthType === CHECK_AUTH_TYPE.CHECK_COOKIE
+                        ? await adminSessionService.compare(verified.user_cd, token)
+                        : await adminSessionService.get(verified.user_cd);
+                    if (adminSession === null) {
                         res.result = createResponseMessage([], '', '', MESSAGE.ERR_UNAUTHORIZED);
                     }
                     // Check invalid role
-                    else if (sess.role < requireRole) {
+                    else if (adminSession.role < requiredRole || (req.method === "DELETE" && adminSession.role < ROLE_TYPE.ADMIN)) {
                         res.result = createResponseMessage([], '', '', MESSAGE.ERR_ACCESS_DENIED);
                     }
                     else {
                         // Save user access
-                        //req.accessInfo = { user: verified, ...req.accessInfo };
+                        req.accessInfo = { user: verified, ...req.accessInfo };
                     }
                 }
             }

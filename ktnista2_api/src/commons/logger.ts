@@ -9,34 +9,32 @@
 //* Comment      :                                                                                                                 *
 //**********************************************************************************************************************************
 
-// #region Import mudule
+// #region Import
 import fs from 'fs';
-// #endregion Import mudule
+// #endregion Import
 
-// #region Functions
-/**
- * Write log to file
- * @param fileNm: file name
- * @param data: data to save
- */
-const writeLog = async (fileNm: string, data: string) => {
-    if (fs.existsSync('./log/' + fileNm)) {
-        await fs.appendFile('./log/' + fileNm, data, (err) => {
-            if (err) throw err;
-        });
-    } else {
-        await fs.writeFile('./log/' + fileNm, data, (err) => {
-            if (err) throw err;
-        });
-    }
-}
-// #endregion Functions
+// #region Export
 
-// #region Exports
 /**
  * Logger class
  */
 export default class {
+    /**
+    * Write log to file
+    * @param fileNm: file name
+    * @param data: data to save
+    */
+    private static writeLog = async (fileNm: string, data: string) => {
+        if (fs.existsSync('./log/' + fileNm)) {
+            await fs.appendFile('./log/' + fileNm, data, (err) => {
+                if (err) throw err;
+            });
+        } else {
+            await fs.writeFile('./log/' + fileNm, data, (err) => {
+                if (err) throw err;
+            });
+        }
+    }
     /**
      * Write tracking log
      * @param str: data so save
@@ -44,7 +42,7 @@ export default class {
     static info = async (str: string) => {
         const date = new Date();
         const fileNm = 'normalLog_' + date.getDate() + '_' + date.getMonth() + '_' + date.getFullYear() + '.txt';
-        await writeLog(fileNm, date.toUTCString() + ': ' + str + '\n');
+        await this.writeLog(fileNm, date.toUTCString() + ': ' + str + '\n');
     }
 
     /**
@@ -56,9 +54,9 @@ export default class {
         const date = new Date();
         const mes = date.toUTCString() + ': ' + stack?.split("at ")[1] + ': ' + err.message;
         const fileNm = 'errLog_' + date.getDate() + '_' + date.getMonth() + '_' + date.getFullYear() + '.txt';
-        
+
         console.error(mes);
-        await writeLog(fileNm, mes + '\n');
+        await this.writeLog(fileNm, mes + '\n');
     }
 
     /**
@@ -69,7 +67,8 @@ export default class {
         const date = new Date();
         const fileNm = 'errLog_' + date.getDate() + '_' + date.getMonth() + '_' + date.getFullYear() + '.txt';
 
-        await writeLog(fileNm, requestInfo);
+        await this.writeLog(fileNm, requestInfo);
     }
 }
+
 // #endregion Exports

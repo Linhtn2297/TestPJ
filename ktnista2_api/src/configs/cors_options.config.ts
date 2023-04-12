@@ -9,10 +9,10 @@
 //* Comment      :                                                                                                                 *
 //**********************************************************************************************************************************
 
-// #region Import module
+// #region Import
 import cors from "cors";
 import allowedOrigins from "./allowed_origins";
-// #endregion Import module
+// #endregion Import
 
 /**
  * options for cors midddleware

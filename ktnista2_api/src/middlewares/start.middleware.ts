@@ -9,21 +9,23 @@
 //* Comment      :                                                                                                                 *
 //**********************************************************************************************************************************
 
-// #region Import mudule
+// #region Import
 import { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import cron from 'node-cron';
 
+import { delExpireSession } from '../services/admin_sessions.service'
 import { AccessInfo } from "../commons/model_data";
-import { API_INFO } from "../commons/defind";
+import { API_INFO } from "../commons/define";
 import MESSAGE from '../commons/message';
 import { createResponseMessage } from "../commons/common";
+import "../configs/global";
+
 import logger from "../commons/logger";
+// #endregion Import
 
-// const adminSession = require('../services/admin_sessions.service');
-// #endregion Import mudule
+// #region Export
 
-// #region Exports
 /**
  * Middleware to setup some common data before to process
  * */
@@ -61,14 +63,14 @@ export default async (req: Request, res: Response, next: NextFunction) => {
         session.startTransaction();
         req.session = session;
 
-        // // Create cron job to delete expire login session
-        // if (global.cronJobDelLoginSession === undefined) {
-        //     global.cronJobDelLoginSession = 'Start';
-        //     cron.schedule('00 00 * * 1', () => {
-        //         adminSession.delExpireSession();
-        //     });
-        //     // stop cron job https://stackoverflow.com/questions/53684668/how-to-stop-a-node-cron-job
-        // }
+        // Create cron job to delete expire login session
+        if (!global.isStartCronJobDelLoginSession) {
+            global.isStartCronJobDelLoginSession = true;
+            cron.schedule('00 00 * * 1', () => {
+                delExpireSession();
+            });
+            // stop cron job https://stackoverflow.com/questions/53684668/how-to-stop-a-node-cron-job
+        }
     }
     catch (err: any) {
         logger.error(err, (new Error().stack));

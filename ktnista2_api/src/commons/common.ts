@@ -1,23 +1,24 @@
 //**********************************************************************************************************************************
 //* ALL RIGHTS RESERVED. COPYRIGHT (C) 2023 KTNISTA                                                                                *
 //**********************************************************************************************************************************
-//* File Name    : common.js                                                                                                       *
+//* File Name    : common.ts                                                                                                       *
 //* Function     : Functions are shared a lot in the system                                                                        *
 //* System Name  : Ktnista Api                                                                                                     *
-//* Create       : LinhTrinh 2023/03/18                                                                                            *
+//* Create       : LinhTrinh 09/04/2023                                                                                            *
 //* Update       :                                                                                                                 *
 //* Comment      :                                                                                                                 *
 //**********************************************************************************************************************************
 
-// #region Import module
+// #region Import
 import format from 'string-format';
 
 import { Message, DataResponse, ErrorItem } from './types';
 import MESSAGE from './message';
-import { FIELD_TYPE } from './defind';
-// #endregion Import module
+import { DATA_TYPE } from './define';
+// #endregion Import
 
-// #region Exports
+// #region Export
+
 /**
  * Get type of data
  * @param data: data to get type
@@ -84,7 +85,7 @@ export const createResponseMessage = (
         dataResponse.message += error !== undefined ? '(' + error?.message + ')' : '';
     }
 
-    if (getType(data) === FIELD_TYPE.OBJECT || data.length > 0 || message.STATUS === 0) {
+    if (getType(data) === DATA_TYPE.OBJECT || data.length > 0 || message.STATUS === 0) {
         if (Array.isArray(data)) {
             dataResponse.count = data.length;
             // If is Api GET
@@ -124,4 +125,5 @@ export const createErrResponseMessage = (
 
     return errLst;
 }
-// #endregion Exports
+
+// #endregion Export

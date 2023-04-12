@@ -9,7 +9,7 @@
 //* Comment      :                                                                                                                 *
 //**********************************************************************************************************************************
 
-// #region Exports
+// #region Export
 export default {
     // #region Success message
     OK: {
@@ -148,4 +148,4 @@ export default {
     }
     // #endregion Error message
 }
-// #endregion Exports
+// #endregion Export

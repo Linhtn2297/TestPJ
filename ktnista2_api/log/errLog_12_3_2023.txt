@@ -1,0 +1,4 @@
+Wed, 12 Apr 2023 05:28:31 GMT: D:\Web Project\KTnistaProject\KTnista2\TestPJ\ktnista2_api\src\server.ts:57:24
+    : Not allowed by KTnista CORS
+Headers: {"ktnista-auth-token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2NkIjoidHJ1Y3RyaW5oMjIiLCJyb2xlIjo5OCwiaWF0IjoxNjgwNDIyNDY5LCJleHAiOjE2ODA0MjYwNjl9.1Rl9Ggyy6ILEZ7mUZD4cTs4T7jId_bsIev-ryX1JOvo","content-type":"application/json","user-agent":"PostmanRuntime/7.29.2","accept":"*/*","postman-token":"2bffb4c5-e650-442c-81d9-efd0273efcb3","host":"localhost:10797","accept-encoding":"gzip, deflate, br","connection":"keep-alive","content-length":"60"}
+Body: {"users":{"fields":{"del_fg":1}}}

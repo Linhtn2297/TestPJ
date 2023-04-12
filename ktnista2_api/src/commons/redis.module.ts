@@ -13,7 +13,7 @@
 const client = require('../configs/redis.config');
 // #endregion Import mudule
 
-// #region Exports
+// #region Export
 /**
  * Save string value to redis with key and id
  * @key primary key

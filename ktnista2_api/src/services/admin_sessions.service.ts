@@ -1,7 +1,7 @@
 //**********************************************************************************************************************************
 //* ALL RIGHTS RESERVED. COPYRIGHT (C) 2023 KTNISTA                                                                                *
 //**********************************************************************************************************************************
-//* File Name    : adminSession.service.js                                                                                        *
+//* File Name    : adminSession.service.js                                                                                         *
 //* Function     : Admin session service                                                                                           *
 //* System Name  : Ktnista Api                                                                                                     *
 //* Create       : LinhTrinh 2023/03/18                                                                                            *
@@ -9,15 +9,15 @@
 //* Comment      :                                                                                                                 *
 //**********************************************************************************************************************************
 
-// #region Import module
+// #region Import
 import bcrypt from 'bcrypt';
 
-import * as redis from './redis.service';
-import DEFINE from '../commons/defind';
+import * as redis from '../commons/redis.module';
+import DEFINE from '../commons/define';
 
 import logger from '../commons/logger';
 import { AdminSession } from '../commons/types';
-// #endregion Import module
+// #endregion Import
 
 // #region Export
 /**
@@ -108,8 +108,10 @@ export const create = async (
  * @param user_cd: user code
  * @param token: access token
  */
-export const compare = async (user_cd: string, token: string) => {
+export const compare = async (user_cd: string, token: string | undefined) => {
     try {
+        if (token === undefined) return null;
+
         // Get session by user_cd
         let sess = await get(user_cd);
         // Check exist and compare token

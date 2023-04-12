@@ -9,23 +9,23 @@
 //* Comment      :                                                                                                                 *
 //**********************************************************************************************************************************
 
-// #region Import module
+// #region Import
 import mongoose from "mongoose";
 import User from './user.model';
-// #endregion Import module
+// #endregion Import
 
+// #region Set model
 interface IDB {
     mongoose: typeof mongoose;
     users: any;
 }
 
-// #region Set model
 const db: IDB = {
     mongoose: mongoose,
     users: User({ mongoose })
 }
 // #endregion Set model
 
-// #region Exports
+// #region Export
 export default db;
-// #endregion Exports
+// #endregion Export

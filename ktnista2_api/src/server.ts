@@ -9,7 +9,7 @@
 //* Comment      :                                                                                                                 *
 //**********************************************************************************************************************************
 
-// #region Import module
+// #region Import
 import express, { Request, Response, NextFunction, Application } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -23,7 +23,7 @@ import dbConnect from './configs/db_connect.config';
 import { createResponseMessage } from '../src/commons/common';
 import MESSAGE from './commons/message';
 import logger from './commons/logger';
-// #endregion Import module
+// #endregion Import
 
 /** Express application */
 const app: Application = express();
@@ -31,15 +31,17 @@ const app: Application = express();
 /** DB connection */
 dbConnect();
 
-//#region Add middleware to pipeline
-/** Using body json */
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
 /** Check server status */
 app.get('/', async (req: Request, res: Response) => {
     return res.send(createResponseMessage([], '', '', MESSAGE.SERVER_READY));
 });
+
+//#region Add middleware to pipeline
+
+/** Using body json */
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 /** Cross origin resource sharing */
 app.use(cors(corsOptions));
@@ -59,11 +61,12 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 /** Setup some data before send to client */
 app.use(end);
-//#endregion
+
+//#endregion  Add middleware to pipeline
 
 /** Start server */
-const port = process.env.PORT || 10197;
-app.listen(Number(port), '0.0.0.0', () => {
+const port = process.env.PORT | 10197;
+app.listen(port, '0.0.0.0', () => {
     console.log(`KTnista API listening at http://localhost:${port}`);
 });
 

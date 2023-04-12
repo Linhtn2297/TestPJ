@@ -9,15 +9,15 @@
 //* Comment      :                                                                                                                 *
 //**********************************************************************************************************************************
 
-// #region Import mudule
+// #region Import
 import { NextFunction, Request, Response } from 'express';
 import MESSAGE from '../commons/message';
 import { createResponseMessage } from '../commons/common';
 
 import logger from '../commons/logger';
-// #endregion Import mudule
+// #endregion Import
 
-// #region Exports
+// #region Export
 /**
  * Middleware for finish, setup some data before send to client
  */
