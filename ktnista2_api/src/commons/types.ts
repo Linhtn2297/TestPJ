@@ -23,4 +23,24 @@ export type DataResponse = { status: number, message?: string, count?: number, [
 export type ErrorItem = { itemName: string, itemValue: any, errCode: number, errMsg: string };
 /** Admin session type */
 export type AdminSession = { role: ROLE_TYPE, token: string, insertYmdHms: Date };
+/** Sort type in mongo */
+export type MongoSort = 1 | -1;
+/** Mongo filter field type */
+export type MongoFilterField = 1 | 0;
+/** Operator query type */
+export type OpertorQuery = '=' | '>' | '>=' | '<' | '<=' | 'in' | 'like';
+/** Data query type */
+export type DataQuery = { name: string, operator: OpertorQuery, value: any };
+/** Mongo query input type */
+export type QueryInput = {
+    [key: string]:
+    {
+        offset: number, limit: number, sort: { [key: string]: MongoSort },
+        fields: { [key: string]: MongoFilterField }, data: DataQuery[], [key: string]: any
+    }
+};
+/** KTnista database table type */
+export type KTnistaDBTable = 'users' | 'hatus' | 'roles';
+/** Delete flag type */
+export type DelFg = 0 | 1;
 // #endregion

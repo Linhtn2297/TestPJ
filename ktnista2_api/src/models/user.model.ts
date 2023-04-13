@@ -10,21 +10,44 @@
 //**********************************************************************************************************************************
 // #region Import
 import { Document } from "mongoose";
-import { MongooseInput } from "../commons/types";
+import { DelFg, MongooseInput } from "../commons/types";
+import { DEL_FG, ROLE_TYPE } from "../commons/define";
 // #endregion Import
 
-// #region Export
+// #region Interface
+/**
+ * User data interface
+*/
+export interface IUserData {
+    user_cd: string;
+    user_nm?: string;
+    password?: string;
+    email?: string;
+    role?: ROLE_TYPE;
+    del_fg?: DelFg;
+    insertYmdHms?: Date;
+    updateYmdHms?: Date;
+}
+
+/**
+ * User document interface
+*/
 export interface IUser extends Document {
-    user_cd: String;
-    user_nm: String;
-    password: String;
-    email: String;
-    role: Number;
-    del_fg: Number;
+    user_cd: string;
+    user_nm: string;
+    password: string;
+    email: string;
+    role: ROLE_TYPE;
+    del_fg: DelFg;
     insertYmdHms: Date;
     updateYmdHms: Date;
 }
+// #endregion Interface
 
+// #region Export
+/**
+ * User schema
+ */
 export default ({mongoose}: MongooseInput) => {
     var schema = new mongoose.Schema({
         /** user code */

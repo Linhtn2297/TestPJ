@@ -38,11 +38,9 @@ app.get('/', async (req: Request, res: Response) => {
 });
 
 //#region Add middleware to pipeline
-
 /** Using body json */
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 
 /** Cross origin resource sharing */
 app.use(cors(corsOptions));
@@ -65,7 +63,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 /** Setup some data before send to client */
 app.use(end);
-
 //#endregion  Add middleware to pipeline
 
 /** Start server */

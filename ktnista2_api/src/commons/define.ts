@@ -10,7 +10,7 @@
 //**********************************************************************************************************************************
 
 // #region Import
-import { AccessInfo } from "./model_data";
+import { AccessInfo, RelateTable, RequestGetPotoType } from "./model_data";
 // #endregion Import
 
 // #region Export
@@ -47,16 +47,16 @@ export enum DATA_TYPE {
 
 /** Action mode */
 export enum CHECK_MODE {
-    INSERT = 1,  // Use for create data
-    UPDATE = 2,  // Use for update data
-    DELETE = 3   // Use for delete data
+    INSERT = 1,         // Use for create data
+    UPDATE = 2,         // Use for update data
+    DELETE = 3          // Use for delete data
 };
 
 /** Delete flag */
 export enum DEL_FG {
-    EXIST = 0,
-    DELETED = 1,
-    INVALID = -1
+    EXIST = 0,          // Exist data
+    DELETED = 1,        // Deleted data
+    INVALID = -1        // Invalid value
 }
 
 /**
@@ -159,10 +159,10 @@ class Define {
     };
 
     /** Request GET prototype */
-    public static readonly REQUEST_GET_PROTOTYPE: any = {
-        users: { defaultSort: { user_cd: 1 }, relateTables: [{ tableNm: 'roles', localField: 'role', foreignField: 'role_id' }] },
-        roles: { defaultSort: { role_id: 1 }, relateTables: [{ tableNm: 'users', localField: 'role_id', foreignField: 'role' }, { tableNm: 'hatus', localField: 'hatu', foreignField: 'key_nm' }] },
-        hatus: { defaultSort: { key_nm: 1 }, relateTables: [] }
+    public static readonly REQUEST_GET_PROTOTYPE: { [key: string]: RequestGetPotoType } = {
+        users: new RequestGetPotoType({ user_cd: 1 }, [new RelateTable('roles', 'role', 'role_id')]),
+        roles: new RequestGetPotoType({ role_id: 1 }, [new RelateTable('users', 'role_id', 'role'), new RelateTable('hatus', 'hatu', 'key_nm')]),
+        hatus: new RequestGetPotoType({ key_nm: 1 }, [])
     };
 }
 

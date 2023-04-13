@@ -12,23 +12,32 @@
 // #region Import
 import mongoose from "mongoose";
 import User, { IUser } from './user.model';
-import Hatu from "./hatu.model";
+import Hatu, { IHatu } from "./hatu.model";
+import Role, { IRole } from "./role.model";
 // #endregion Import
 
-// #region Set model
+// #region Interface
+/**
+ * Database context interface
+*/
 interface IDB {
     mongoose: typeof mongoose;
-    users: any;
-    hatus: any;
+    users: mongoose.Model<IUser>;
+    hatus: mongoose.Model<IHatu>;
+    roles: mongoose.Model<IRole>;
 }
+// #endregion Interface
 
+// #region Export
+/**
+ * Datase context
+ */
 const db: IDB = {
     mongoose: mongoose,
     users: User({ mongoose }),
-    hatus: Hatu({ mongoose })
+    hatus: Hatu({ mongoose }),
+    roles: Role({ mongoose })
 }
-// #endregion Set model
 
-// #region Export
 export default db;
 // #endregion Export

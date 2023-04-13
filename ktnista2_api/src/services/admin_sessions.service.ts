@@ -23,6 +23,7 @@ import { AdminSession } from '../commons/types';
 /**
  * Get admin session by user_cd
  * @param user_cd: user code
+ * @return admin session
  */
 export const get = async (user_cd: string): Promise<AdminSession | null> => {
     try {
@@ -41,6 +42,7 @@ export const get = async (user_cd: string): Promise<AdminSession | null> => {
 
 /**
  * Delete all expire admin session
+ * @returns true: delete success | false: delete failed
  */
 export const delExpireSession = async (): Promise<boolean> => {
     try {
@@ -83,6 +85,7 @@ export const delExpireSession = async (): Promise<boolean> => {
  * @param user_cd: user code
  * @param role: user role
  * @param token: access token
+ * @return true: create success | false: create failed
  */
 export const create = async (
     { user_cd, role, token }: { user_cd: string, role: number, token: string }
@@ -107,6 +110,7 @@ export const create = async (
  * Check admin session
  * @param user_cd: user code
  * @param token: access token
+ * @return admin session: same | null: not same
  */
 export const compare = async (user_cd: string, token: string | undefined): Promise<AdminSession | null> => {
     try {
@@ -129,6 +133,7 @@ export const compare = async (user_cd: string, token: string | undefined): Promi
 /**
  * Delete admin session
  * @param user_cd: user code
+ * @return true: delete success | false: delete failed
  */
 export const del = async (user_cd: string): Promise<boolean> => {
     try {

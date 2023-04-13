@@ -19,6 +19,7 @@ const client = require('../configs/redis.config');
  * @param key: primary key
  * @param id: base key
  * @param value: value to save
+ * @returns "OK": set successfully | set failed
  */
 export const setRedis = async (key: string, id: string, value: string): Promise<string> => {
     key = key + ':' + id;
@@ -33,6 +34,7 @@ export const setRedis = async (key: string, id: string, value: string): Promise<
  * Get string value from redis
  * @param primaryKey: primary key
  * @param baseKey: base key
+ * @returns string value save in redis
  */
 export const getRedis = async (primaryKey: string, baseKey: string): Promise<string> => {
     return new Promise((isOK, isErr) => {
@@ -45,6 +47,7 @@ export const getRedis = async (primaryKey: string, baseKey: string): Promise<str
 /**
  * Get keys with key pattern
  * @param primaryKey: primary key
+ * @returns list of keys
  */
 export const getKeysRedis = async (primaryKey: string): Promise<string[]> => {
     return new Promise((isOK, isErr) => {
@@ -60,12 +63,12 @@ export const getKeysRedis = async (primaryKey: string): Promise<string[]> => {
  * Delete from redis with key
  * @param primaryKey: primary key
  * @param baseKey: base key
+ * @returns 1: delete success | 0: delete failed
  */
-export const delRedis = async (key: string, id: string): Promise<number> => {
-    key = key + ':' + id;
+export const delRedis = async (primaryKey: string, baseKey: string): Promise<1 | 0> => {
     return new Promise((isOK, isErr) => {
         return new Promise((isOK, isErr) => {
-            client.del(key, (err: Error, rs: number) => {
+            client.del(primaryKey + baseKey, (err: Error, rs: number) => {
                 return !err ? isOK(rs) : isErr(err);
             });
         });

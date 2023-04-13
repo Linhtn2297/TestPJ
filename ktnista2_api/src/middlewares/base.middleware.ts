@@ -16,6 +16,7 @@ import sanitize from 'mongo-sanitize';
 import { createResponseMessage, getType } from '../commons/common';
 import MESSAGE from '../commons/message';
 import DEFINE, { CHECK_BODY_TYPE, DATA_TYPE, ROLE_TYPE } from '../commons/define';
+import { DataQuery, OpertorQuery, QueryInput } from '../commons/types';
 
 const logger = require('../commons/logger');
 // #endregion Import
@@ -27,7 +28,7 @@ const logger = require('../commons/logger');
  * @param apiName: api name
  * @returns true: body valid | false: invalid
  */
-const checkGetBody = (body: any, apiName: string) => {
+const checkGetBody = (body: QueryInput, apiName: string) => {
     let bodyData = body[apiName];
     if (bodyData !== undefined) {
         // Check type of body data
@@ -48,11 +49,11 @@ const checkGetBody = (body: any, apiName: string) => {
             for (let i = 0; i < data.length; i++) {
                 if (getType(data[i]) !== DATA_TYPE.OBJECT) return false;
 
-                let { name, value, operator } = data[i];
+                let { name, value, operator }: DataQuery = data[i];
                 // Check required fields
                 if (name === undefined || value === undefined || operator === undefined) return false;
                 // Check invalid value
-                let operatorProt = ['=', '>', '>=', '<', '<=', 'in', 'like'];    // Operator value
+                let operatorProt: OpertorQuery[] = ['=', '>', '>=', '<', '<=', 'in', 'like'];    // Operator value
                 if (fieldsProt.indexOf(name) === -1 || operatorProt.indexOf(operator) === -1) {
                     return false;
                 }
@@ -121,6 +122,9 @@ const checkGetBody = (body: any, apiName: string) => {
 // #endregion Functions
 
 // #region Export
+/**
+ * Check body format middleware
+ */
 export default (req: Request, res: Response, next: NextFunction) => {
     // If there was a previous error, it will be forwarded
     if (res.result?.status !== MESSAGE.OK.STATUS) {

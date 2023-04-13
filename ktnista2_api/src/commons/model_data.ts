@@ -11,6 +11,7 @@
 
 // #region Import
 import { CHECK_AUTH_TYPE, CHECK_BODY_TYPE, ROLE_TYPE } from "./define";
+import { KTnistaDBTable, MongoSort } from "./types";
 // #endregion Import
 
 // #region Export
@@ -27,7 +28,7 @@ export class AccessInfo {
     /** Authentication type for check */
     public checkAuthType: CHECK_AUTH_TYPE;
     /** Table name to handle with database */
-    public tableName: string;
+    public tableName: KTnistaDBTable;
     /** user access info  */
     public user?: any;
 
@@ -36,7 +37,7 @@ export class AccessInfo {
         _requiredRole: ROLE_TYPE,
         _checkBodyType: CHECK_BODY_TYPE,
         _checkAuthType: CHECK_AUTH_TYPE,
-        _tableName: string,
+        _tableName: KTnistaDBTable,
         _user?: any) {
         this.apiName = _apiName;
         this.requiredRole = _requiredRole;
@@ -44,6 +45,39 @@ export class AccessInfo {
         this.checkAuthType = _checkAuthType;
         this.tableName = _tableName;
         this.user = _user;
+    }
+}
+
+/**
+ * Relate table class
+ */
+export class RelateTable {
+    /** Relate table name */
+    public tableNm: KTnistaDBTable;
+    /** Local field name */
+    public localField: string;
+    /** Relate field name */
+    public foreignField: string;
+
+    constructor (_tableNm: KTnistaDBTable, _localField: string, _foreignField: string) {
+        this.tableNm = _tableNm;
+        this.localField = _localField;
+        this.foreignField = _foreignField;
+    }
+}
+
+/**
+ * Request get prototype class
+ */
+export class RequestGetPotoType {
+    /** Default sort */
+    public defaultSort: { [key: string]: MongoSort };
+    /** Relate tables */
+    public relateTables: RelateTable[];
+
+    constructor (_defaultSort: { [key: string]: MongoSort }, _relateTables: RelateTable[]) {
+        this.defaultSort = _defaultSort;
+        this.relateTables = _relateTables;
     }
 }
 // #endregion Export
